@@ -1,4 +1,4 @@
-// Função deve retornar um gstatus (GSUCCESS ou GERROR)
+gimp "somar"
 
 gstatus main() {
     // inteiro com sinal 8bit
@@ -26,6 +26,8 @@ gstatus main() {
     // booleano e print do booleano
     bool match = true;
     gprint("o valor deu match: %b", match);
+
+    gprint("Valor da soma 2+2: %i8", somar(2, 2));
 
     gprint("Encerrando com codigo %d", GSUCCESS);
     return GSUCCESS;

@@ -1,0 +1,7 @@
+i8 fazsoma(i8 n1, i8 n2) {
+    return n1 + n2;
+}
+
+gext i8 somar(i8 n1, i8 n2) {
+    return fazsoma(n1, n2);
+}

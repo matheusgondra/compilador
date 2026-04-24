@@ -22,9 +22,23 @@ const uintTypes = {
     "u64": "uint64_t"
 } as const;
 
+const functionDefinitionPattern = /^(\s*)(gext\s+)?(?!static\b)(?!if\b|for\b|while\b|switch\b|else\b)([A-Za-z_]\w*(?:\s*\*+)?)\s+([A-Za-z_]\w*)\s*\(([^;\n{}]*)\)\s*\{/gm;
 
-export const dgToC = (dg: string): string => {
-    let c = `${headers}${macrosC}${dg}`;
+type DgToCOptions = {
+    prelude?: string;
+    requireMainReturn?: boolean;
+};
+
+
+export const dgToC = (dg: string, options: DgToCOptions = {}): string => {
+    const { prelude = "", requireMainReturn = true } = options;
+    let c = `${headers}${macrosC}${prelude}${dg}`;
+
+    c = c.replace(functionDefinitionPattern, (full, indent: string, exportKeyword: string | undefined, returnType: string, functionName: string, args: string) => {
+        if (functionName === "main") return full;
+        if (exportKeyword) return `${indent}${returnType} ${functionName}(${args}) {`;
+        return `${indent}static ${returnType} ${functionName}(${args}) {`;
+    });
 
     c = c.replace(
         /\bgprint\s*\(\s*"((?:\\.|[^"\\])*)"\s*,\s*([A-Za-z_]\w*)\s*\)/g,
@@ -62,7 +76,7 @@ export const dgToC = (dg: string): string => {
     c = c.replace(/str/g, "char*");
 
 
-    if (!/return\s+(GSUCCESS|GERROR)\s*;?\s*}/.test(c)) { 
+    if (requireMainReturn && !/return\s+(GSUCCESS|GERROR)\s*;?\s*}/.test(c)) { 
         throw new Error("Main function must return a gstatus (GSUCCESS or GERROR)");
     }
     c = c.replace(/GERROR/g, "EXIT_FAILURE");
