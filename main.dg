@@ -1,0 +1,32 @@
+// Função deve retornar um gstatus (GSUCCESS ou GERROR)
+
+gstatus main() {
+    // inteiro com sinal 8bit
+    i8 int8 = 127;
+
+    // inteiro com sinal 16bit
+    i16 value = 1000;
+    if (value < 1000) {
+        gprint("Encerrando com codigo %d", GERROR);
+        return GERROR;
+    }
+
+    // função de print
+    gprint("Inteiro 8 bits: %i8 algo", int8);
+    gprint("Inteiro 16 bits: %i16 algo", value);
+
+    // tipo string
+    str texto = "Numero %u64 é 64bit sem sinal";
+    
+    // inteiro sem sinal 64bit
+    u64 numero = 213124380235;
+
+    gprint(texto, numero);
+
+    // booleano e print do booleano
+    bool match = true;
+    gprint("o valor deu match: %b", match);
+
+    gprint("Encerrando com codigo %d", GSUCCESS);
+    return GSUCCESS;
+}
